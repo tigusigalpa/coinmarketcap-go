@@ -1,5 +1,10 @@
 # CoinMarketCap client for Go
 
+[![CI](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/tigusigalpa/coinmarketcap-go.svg)](https://pkg.go.dev/github.com/tigusigalpa/coinmarketcap-go)
+[![Go version](https://img.shields.io/github/go-mod/go-version/tigusigalpa/coinmarketcap-go)](go.mod)
+[![License](https://img.shields.io/github/license/tigusigalpa/coinmarketcap-go)](LICENSE)
+
 ![CoinMarketCap Go SDK](https://i.postimg.cc/tTfkMhvb/coinmarketcap-golang-api.jpg)
 
 **Language:** English · [Русский](README-ru.md)
