@@ -1,6 +1,6 @@
 # CoinMarketCap API Client for Go
 
-![CoinMarketCap Go SDK](https://github.com/user-attachments/assets/1c81d409-3d84-4bd5-8e1c-147194463a2b)
+![CoinMarketCap Go SDK](https://i.postimg.cc/tTfkMhvb/coinmarketcap-golang-api.jpg)
 
 **🌐 Language:** English | [Русский](README-ru.md)
 
