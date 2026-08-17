@@ -84,9 +84,9 @@ client, err := coinmarketcap.NewClientBuilder().
 
 | Сервис | Методы |
 | --- | --- |
-| `Cryptocurrency()` | `ListingsLatest`, `ListingsHistorical`, `QuotesLatest`, `QuotesHistorical`, `Info`, `Map`, `OHLCVLatest`, `OHLCVHistorical`, `Categories`, `TrendingLatest`, `TrendingGainersLosers` |
-| `Exchange()` | `ListingsLatest`, `QuotesLatest`, `QuotesHistorical`, `Info`, `Map`, `MarketPairsLatest` |
-| `GlobalMetrics()` | `QuotesLatest`, `QuotesHistorical` |
+| `Cryptocurrency()` | `ListingsLatest`, `ListingsHistorical`, `ListingsNew`, `QuotesLatest`, `QuotesHistorical`, `Info`, `Map`, `OHLCVLatest`, `OHLCVHistorical`, `Categories`, `Category`, `MarketPairsLatest`, `PricePerformanceStatsLatest`, `SimplePrice`, `Airdrops`, `Airdrop`, `TrendingLatest`, `TrendingGainersLosers`, `TrendingMostVisited` |
+| `Exchange()` | `ListingsLatest`, `QuotesLatest`, `QuotesHistorical`, `Info`, `Map`, `MarketPairsLatest`, `Assets` |
+| `GlobalMetrics()` | `QuotesLatest`, `QuotesHistorical`, `FearAndGreedLatest`, `FearAndGreedHistorical`, `AltcoinSeasonIndexLatest`, `AltcoinSeasonIndexHistorical` |
 | `Tools()` | `PriceConversion` |
 
 Например, первые десять криптовалют из листинга:

@@ -35,3 +35,7 @@ func (e *Exchange) Map(params map[string]string) (map[string]interface{}, error)
 func (e *Exchange) MarketPairsLatest(params map[string]string) (map[string]interface{}, error) {
 	return e.httpClient.Get("/v1/exchange/market-pairs/latest", params)
 }
+
+func (e *Exchange) Assets(params map[string]string) (map[string]interface{}, error) {
+	return e.httpClient.Get("/v1/exchange/assets", params)
+}
