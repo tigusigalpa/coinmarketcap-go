@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	coinmarketcap "github.com/tigusigalpa/coinmarketcap-go"
 	"github.com/joho/godotenv"
+	coinmarketcap "github.com/tigusigalpa/coinmarketcap-go"
 )
 
 func main() {

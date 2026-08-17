@@ -1,6 +1,7 @@
 package coinmarketcap
 
 import (
+	"sync"
 	"time"
 
 	"github.com/tigusigalpa/coinmarketcap-go/api"
@@ -8,11 +9,15 @@ import (
 )
 
 type Client struct {
-	httpClient    *http.Client
-	cryptocurrency *api.Cryptocurrency
-	exchange      *api.Exchange
-	globalMetrics *api.GlobalMetrics
-	tools         *api.Tools
+	httpClient         *http.Client
+	cryptocurrency     *api.Cryptocurrency
+	cryptocurrencyOnce sync.Once
+	exchange           *api.Exchange
+	exchangeOnce       sync.Once
+	globalMetrics      *api.GlobalMetrics
+	globalMetricsOnce  sync.Once
+	tools              *api.Tools
+	toolsOnce          sync.Once
 }
 
 func NewClient(httpClient *http.Client) *Client {
@@ -22,30 +27,30 @@ func NewClient(httpClient *http.Client) *Client {
 }
 
 func (c *Client) Cryptocurrency() *api.Cryptocurrency {
-	if c.cryptocurrency == nil {
+	c.cryptocurrencyOnce.Do(func() {
 		c.cryptocurrency = api.NewCryptocurrency(c.httpClient)
-	}
+	})
 	return c.cryptocurrency
 }
 
 func (c *Client) Exchange() *api.Exchange {
-	if c.exchange == nil {
+	c.exchangeOnce.Do(func() {
 		c.exchange = api.NewExchange(c.httpClient)
-	}
+	})
 	return c.exchange
 }
 
 func (c *Client) GlobalMetrics() *api.GlobalMetrics {
-	if c.globalMetrics == nil {
+	c.globalMetricsOnce.Do(func() {
 		c.globalMetrics = api.NewGlobalMetrics(c.httpClient)
-	}
+	})
 	return c.globalMetrics
 }
 
 func (c *Client) Tools() *api.Tools {
-	if c.tools == nil {
+	c.toolsOnce.Do(func() {
 		c.tools = api.NewTools(c.httpClient)
-	}
+	})
 	return c.tools
 }
 

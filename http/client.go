@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -31,9 +32,14 @@ func NewClient(baseURL, apiKey string, timeout time.Duration) *Client {
 }
 
 func (c *Client) Get(endpoint string, params map[string]string) (map[string]interface{}, error) {
+	return c.GetWithContext(context.Background(), endpoint, params)
+}
+
+// GetWithContext sends a GET request using ctx.
+func (c *Client) GetWithContext(ctx context.Context, endpoint string, params map[string]string) (map[string]interface{}, error) {
 	fullURL := c.buildURL(endpoint, params)
 
-	req, err := http.NewRequest("GET", fullURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fullURL, nil)
 	if err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to create request: %v", err), 0, nil, err)
 	}
@@ -52,27 +58,36 @@ func (c *Client) Get(endpoint string, params map[string]string) (map[string]inte
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to read response body: %v", err), resp.StatusCode, nil, err)
 	}
 
+	if resp.StatusCode >= 400 {
+		var data map[string]interface{}
+		if err := json.Unmarshal(body, &data); err != nil {
+			return nil, cmcerrors.NewAPIError(http.StatusText(resp.StatusCode), resp.StatusCode, nil, err)
+		}
+		return nil, c.handleError(resp.StatusCode, data)
+	}
+
 	var data map[string]interface{}
 	if err := json.Unmarshal(body, &data); err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to parse JSON response: %v", err), resp.StatusCode, nil, err)
-	}
-
-	if resp.StatusCode >= 400 {
-		return nil, c.handleError(resp.StatusCode, data)
 	}
 
 	return data, nil
 }
 
 func (c *Client) Post(endpoint string, data map[string]interface{}) (map[string]interface{}, error) {
-	fullURL := c.baseURL + endpoint
+	return c.PostWithContext(context.Background(), endpoint, data)
+}
+
+// PostWithContext sends a POST request using ctx.
+func (c *Client) PostWithContext(ctx context.Context, endpoint string, data map[string]interface{}) (map[string]interface{}, error) {
+	fullURL := c.buildURL(endpoint, nil)
 
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to marshal request data: %v", err), 0, nil, err)
 	}
 
-	req, err := http.NewRequest("POST", fullURL, strings.NewReader(string(jsonData)))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fullURL, strings.NewReader(string(jsonData)))
 	if err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to create request: %v", err), 0, nil, err)
 	}
@@ -92,20 +107,24 @@ func (c *Client) Post(endpoint string, data map[string]interface{}) (map[string]
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to read response body: %v", err), resp.StatusCode, nil, err)
 	}
 
+	if resp.StatusCode >= 400 {
+		var responseData map[string]interface{}
+		if err := json.Unmarshal(body, &responseData); err != nil {
+			return nil, cmcerrors.NewAPIError(http.StatusText(resp.StatusCode), resp.StatusCode, nil, err)
+		}
+		return nil, c.handleError(resp.StatusCode, responseData)
+	}
+
 	var responseData map[string]interface{}
 	if err := json.Unmarshal(body, &responseData); err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to parse JSON response: %v", err), resp.StatusCode, nil, err)
-	}
-
-	if resp.StatusCode >= 400 {
-		return nil, c.handleError(resp.StatusCode, responseData)
 	}
 
 	return responseData, nil
 }
 
 func (c *Client) buildURL(endpoint string, params map[string]string) string {
-	fullURL := c.baseURL + endpoint
+	fullURL := c.baseURL + "/" + strings.TrimLeft(endpoint, "/")
 
 	if len(params) > 0 {
 		values := url.Values{}
