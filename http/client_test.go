@@ -104,6 +104,23 @@ func TestGetMapsAPIAndNonJSONErrors(t *testing.T) {
 	}
 }
 
+func TestGetUsesRetryAfterHeader(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Retry-After", "30")
+		w.WriteHeader(http.StatusTooManyRequests)
+		_, _ = w.Write([]byte(`{"status":{"error_message":"Too many requests"}}`))
+	}))
+	defer server.Close()
+
+	_, err := NewClient(server.URL, "test-key", 0).Get("/rate-limit", nil)
+	var rateLimitErr *cmcerrors.RateLimitError
+	if !errors.As(err, &rateLimitErr) || rateLimitErr.RetryAfter == nil || *rateLimitErr.RetryAfter != 30 {
+		t.Fatalf("error = %#v, want RateLimitError with Retry-After header", err)
+	}
+}
+
 func TestBuildURLEncodesParams(t *testing.T) {
 	t.Parallel()
 

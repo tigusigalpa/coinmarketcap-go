@@ -1,12 +1,14 @@
 package http
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -63,7 +65,7 @@ func (c *Client) GetWithContext(ctx context.Context, endpoint string, params map
 		if err := json.Unmarshal(body, &data); err != nil {
 			return nil, cmcerrors.NewAPIError(http.StatusText(resp.StatusCode), resp.StatusCode, nil, err)
 		}
-		return nil, c.handleError(resp.StatusCode, data)
+		return nil, c.handleError(resp.StatusCode, resp.Header.Get("Retry-After"), data)
 	}
 
 	var data map[string]interface{}
@@ -87,7 +89,7 @@ func (c *Client) PostWithContext(ctx context.Context, endpoint string, data map[
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to marshal request data: %v", err), 0, nil, err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fullURL, strings.NewReader(string(jsonData)))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fullURL, bytes.NewReader(jsonData))
 	if err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("failed to create request: %v", err), 0, nil, err)
 	}
@@ -112,7 +114,7 @@ func (c *Client) PostWithContext(ctx context.Context, endpoint string, data map[
 		if err := json.Unmarshal(body, &responseData); err != nil {
 			return nil, cmcerrors.NewAPIError(http.StatusText(resp.StatusCode), resp.StatusCode, nil, err)
 		}
-		return nil, c.handleError(resp.StatusCode, responseData)
+		return nil, c.handleError(resp.StatusCode, resp.Header.Get("Retry-After"), responseData)
 	}
 
 	var responseData map[string]interface{}
@@ -137,7 +139,7 @@ func (c *Client) buildURL(endpoint string, params map[string]string) string {
 	return fullURL
 }
 
-func (c *Client) handleError(statusCode int, response map[string]interface{}) error {
+func (c *Client) handleError(statusCode int, retryAfterHeader string, response map[string]interface{}) error {
 	message := "Unknown error"
 	if status, ok := response["status"].(map[string]interface{}); ok {
 		if errorMsg, ok := status["error_message"].(string); ok {
@@ -158,6 +160,11 @@ func (c *Client) handleError(statusCode int, response map[string]interface{}) er
 			if ra, ok := status["retry_after"].(float64); ok {
 				raInt := int(ra)
 				retryAfter = &raInt
+			}
+		}
+		if retryAfter == nil {
+			if seconds, err := strconv.Atoi(retryAfterHeader); err == nil && seconds >= 0 {
+				retryAfter = &seconds
 			}
 		}
 		return cmcerrors.NewRateLimitError(message, retryAfter, response)
