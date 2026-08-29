@@ -18,7 +18,11 @@ func TestClientBuilder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Build() error = %v", err)
 	}
-	if client.Cryptocurrency() != client.Cryptocurrency() || client.Exchange() != client.Exchange() || client.GlobalMetrics() != client.GlobalMetrics() || client.Tools() != client.Tools() {
+	cryptocurrency := client.Cryptocurrency()
+	exchange := client.Exchange()
+	globalMetrics := client.GlobalMetrics()
+	tools := client.Tools()
+	if client.Cryptocurrency() != cryptocurrency || client.Exchange() != exchange || client.GlobalMetrics() != globalMetrics || client.Tools() != tools {
 		t.Fatal("service accessors must cache their service")
 	}
 
