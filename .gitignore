@@ -8,6 +8,13 @@
 # Test binary, built with `go test -c`
 *.test
 
+# Local Go build and test caches
+.gocache/
+.gotmp/
+.tmp-go-cache/
+coverage/
+test-results/
+
 # Output of the go coverage tool
 *.out
 coverage.html

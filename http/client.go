@@ -15,6 +15,7 @@ import (
 	cmcerrors "github.com/tigusigalpa/coinmarketcap-go/errors"
 )
 
+// Client sends authenticated HTTP requests to the CoinMarketCap API.
 type Client struct {
 	httpClient *http.Client
 	baseURL    string
@@ -22,6 +23,7 @@ type Client struct {
 	timeout    time.Duration
 }
 
+// NewClient creates an HTTP client for baseURL using apiKey.
 func NewClient(baseURL, apiKey string, timeout time.Duration) *Client {
 	return &Client{
 		httpClient: &http.Client{
@@ -33,6 +35,7 @@ func NewClient(baseURL, apiKey string, timeout time.Duration) *Client {
 	}
 }
 
+// Get sends a GET request to endpoint with params.
 func (c *Client) Get(endpoint string, params map[string]string) (map[string]interface{}, error) {
 	return c.GetWithContext(context.Background(), endpoint, params)
 }
@@ -76,6 +79,7 @@ func (c *Client) GetWithContext(ctx context.Context, endpoint string, params map
 	return data, nil
 }
 
+// Post sends a JSON POST request to endpoint with data.
 func (c *Client) Post(endpoint string, data map[string]interface{}) (map[string]interface{}, error) {
 	return c.PostWithContext(context.Background(), endpoint, data)
 }

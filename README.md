@@ -1,8 +1,12 @@
 # CoinMarketCap client for Go
 
 [![CI](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/ci.yml)
+[![Tests](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/test.yml)
+[![CodeQL](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/coinmarketcap-go/actions/workflows/codeql.yml)
+[![Codecov](https://codecov.io/gh/tigusigalpa/coinmarketcap-go/graph/badge.svg)](https://codecov.io/gh/tigusigalpa/coinmarketcap-go)
 [![Go Reference](https://pkg.go.dev/badge/github.com/tigusigalpa/coinmarketcap-go.svg)](https://pkg.go.dev/github.com/tigusigalpa/coinmarketcap-go)
 [![Go version](https://img.shields.io/github/go-mod/go-version/tigusigalpa/coinmarketcap-go)](go.mod)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tigusigalpa/coinmarketcap-go)](https://goreportcard.com/report/github.com/tigusigalpa/coinmarketcap-go)
 [![License](https://img.shields.io/github/license/tigusigalpa/coinmarketcap-go)](LICENSE)
 
 ![CoinMarketCap Go SDK](https://i.postimg.cc/tTfkMhvb/coinmarketcap-golang-api.jpg)
