@@ -56,7 +56,7 @@ func (c *Client) GetWithContext(ctx context.Context, endpoint string, params map
 	if err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("HTTP request failed: %v", err), 0, nil, err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -106,7 +106,7 @@ func (c *Client) PostWithContext(ctx context.Context, endpoint string, data map[
 	if err != nil {
 		return nil, cmcerrors.NewAPIError(fmt.Sprintf("HTTP request failed: %v", err), 0, nil, err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
