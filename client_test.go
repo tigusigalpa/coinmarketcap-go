@@ -13,8 +13,11 @@ func TestClientBuilder(t *testing.T) {
 	if err == nil {
 		t.Fatal("Build() error = nil, want missing API key error")
 	}
+	if err.Error() != "API key is required" {
+		t.Fatalf("Build() error = %q", err)
+	}
 
-	client, err := NewClientBuilder().SetAPIKey("test-key").SetTimeout(time.Second).UseSandbox().Build()
+	client, err := NewClientBuilder().SetAPIKey("test-key").SetBaseURL("https://example.test").SetTimeout(time.Second).UseSandbox().Build()
 	if err != nil {
 		t.Fatalf("Build() error = %v", err)
 	}
