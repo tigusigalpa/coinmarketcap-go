@@ -11,6 +11,18 @@ import (
 	cmcerrors "github.com/tigusigalpa/coinmarketcap-go/errors"
 )
 
+func TestNewClientWithHTTPClient(t *testing.T) {
+	t.Parallel()
+
+	supplied := &http.Client{}
+	if got := NewClientWithHTTPClient("https://example.test", "test-key", supplied).httpClient; got != supplied {
+		t.Fatal("NewClientWithHTTPClient did not retain the supplied client")
+	}
+	if got := NewClientWithHTTPClient("https://example.test", "test-key", nil).httpClient; got != http.DefaultClient {
+		t.Fatal("NewClientWithHTTPClient did not fall back to http.DefaultClient")
+	}
+}
+
 func TestGetSendsRequestAndDecodesResponse(t *testing.T) {
 	t.Parallel()
 

@@ -1,6 +1,10 @@
 package api
 
-import "github.com/tigusigalpa/coinmarketcap-go/http"
+import (
+	"context"
+
+	"github.com/tigusigalpa/coinmarketcap-go/http"
+)
 
 // GlobalMetrics provides global cryptocurrency market data methods.
 type GlobalMetrics struct {
@@ -26,7 +30,12 @@ func (g *GlobalMetrics) QuotesHistorical(params map[string]string) (map[string]i
 
 // FearAndGreedLatest returns the latest Crypto Fear and Greed Index.
 func (g *GlobalMetrics) FearAndGreedLatest(params map[string]string) (map[string]interface{}, error) {
-	return g.httpClient.Get("/v3/fear-and-greed/latest", params)
+	return g.FearAndGreedLatestWithContext(context.Background(), params)
+}
+
+// FearAndGreedLatestWithContext returns the latest Crypto Fear and Greed Index using ctx.
+func (g *GlobalMetrics) FearAndGreedLatestWithContext(ctx context.Context, params map[string]string) (map[string]interface{}, error) {
+	return g.httpClient.GetWithContext(ctx, "/v3/fear-and-greed/latest", params)
 }
 
 // FearAndGreedHistorical returns historical Crypto Fear and Greed Index data.

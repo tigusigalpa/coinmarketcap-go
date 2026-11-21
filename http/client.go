@@ -20,18 +20,23 @@ type Client struct {
 	httpClient *http.Client
 	baseURL    string
 	apiKey     string
-	timeout    time.Duration
 }
 
 // NewClient creates an HTTP client for baseURL using apiKey.
 func NewClient(baseURL, apiKey string, timeout time.Duration) *Client {
+	return NewClientWithHTTPClient(baseURL, apiKey, &http.Client{Timeout: timeout})
+}
+
+// NewClientWithHTTPClient creates a CoinMarketCap client using client as-is.
+// If client is nil, it uses [http.DefaultClient].
+func NewClientWithHTTPClient(baseURL, apiKey string, client *http.Client) *Client {
+	if client == nil {
+		client = http.DefaultClient
+	}
 	return &Client{
-		httpClient: &http.Client{
-			Timeout: timeout,
-		},
-		baseURL: strings.TrimRight(baseURL, "/"),
-		apiKey:  apiKey,
-		timeout: timeout,
+		httpClient: client,
+		baseURL:    strings.TrimRight(baseURL, "/"),
+		apiKey:     apiKey,
 	}
 }
 
